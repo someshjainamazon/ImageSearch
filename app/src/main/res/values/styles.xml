@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:background">#3f51b5</item>
+        <item name="android:titleTextStyle">@style/Base.TextAppearance.AppCompat.Button</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:logo">@drawable/search_icon</item>
+
+
+
+        <!-- Customize your theme here. -->
+    </style>
+
+</resources>

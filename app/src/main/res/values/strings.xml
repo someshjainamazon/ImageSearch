@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ImageSearch</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="enter_query">Enter Search Query</string>
+    <string name="btLabel">Submit</string>
+    <string name="search_prompt">Enter Search Query</string>
+    <string name="image_title_lable">Image Title</string>
+    <string name="title_activity_full_screen">FullScreenActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="adv_search">Advanced Search Settings</string>
+    <string name="tv_image_size">Size</string>
+
+</resources>
