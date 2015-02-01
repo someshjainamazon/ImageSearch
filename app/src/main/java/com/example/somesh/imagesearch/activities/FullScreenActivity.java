@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.params.TonemapCurve;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;

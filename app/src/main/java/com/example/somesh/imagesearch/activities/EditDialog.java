@@ -23,7 +23,7 @@ import com.example.somesh.imagesearch.models.QueryFilter;
 /**
  * Created by somesh on 1/31/15.
  */
-public class EditDialog extends DialogFragment  {
+public class EditDialog extends DialogFragment implements View.OnClickListener {
 
 
 
@@ -34,6 +34,21 @@ public class EditDialog extends DialogFragment  {
     Spinner imageTypeSpinner;
     EditText etSiteFilter;
     Button saveButton;
+
+    @Override
+    public void onClick(View v) {
+        QueryFilter queryFilter = new QueryFilter();
+
+        if(imageSizeSpinner.getSelectedItem()!=null && imageSizeSpinner.getSelectedItem().toString()!="---") queryFilter.setImageSize(imageSizeSpinner.getSelectedItem().toString());
+        if(colorFilterSpinner.getSelectedItem()!=null && colorFilterSpinner.getSelectedItem().toString()!="---") queryFilter.setColor(colorFilterSpinner.getSelectedItem().toString());
+        if(imageTypeSpinner.getSelectedItem()!=null && imageTypeSpinner.getSelectedItem().toString()!="---") queryFilter.setImageType(imageTypeSpinner.getSelectedItem().toString());
+        if(etSiteFilter.getText()!=null)queryFilter.setSiteFilter(etSiteFilter.getText().toString());
+
+
+        EditDialogListener listener = (EditDialogListener) getActivity();
+        listener.onFinishEditDialog(queryFilter);
+        dismiss();
+    }
 
     public interface EditDialogListener {
         void onFinishEditDialog(QueryFilter queryFilter);
@@ -67,6 +82,9 @@ public class EditDialog extends DialogFragment  {
 
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        saveButton.setOnClickListener(this);
+
+        /*
         saveButton.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -88,7 +106,7 @@ public class EditDialog extends DialogFragment  {
                 }
                 return false;
             }
-        });
+        });*/
         return view;
 
 
@@ -120,8 +138,6 @@ public class EditDialog extends DialogFragment  {
         spinner.setSelection(index);
 
     }
-
-
 
 
     public EditDialog() {

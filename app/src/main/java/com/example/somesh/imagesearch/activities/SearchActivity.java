@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.etsy.android.grid.StaggeredGridView;
 import com.example.somesh.imagesearch.R;
 import com.example.somesh.imagesearch.adapters.ImageAdapter;
 import com.example.somesh.imagesearch.models.*;
@@ -35,10 +36,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends ActionBarActivity implements EditDialog.EditDialogListener{
 
     private EditText etQuery;
-    private GridView gvImages;
+    //private GridView gvImages;
+    private StaggeredGridView gvImages;
     private ArrayList<Image> imageResults;
     private ImageAdapter imageAdapter;
     public static final int REQUEST_RESULT=50;
@@ -64,19 +66,19 @@ public class SearchActivity extends ActionBarActivity {
 
     }
 
-    /*
+
     private void showEditDialog() {
 
         FragmentManager fm = getSupportFragmentManager();
         EditDialog editNameDialog = EditDialog.newInstance(queryFilter);
         editNameDialog.show(fm, "activity_settings");
-    }*/
+    }
 
     private void setupViews() {
 
         etQuery = (EditText) findViewById(R.id.etQuery);
-        gvImages = (GridView) findViewById(R.id.gvItems);
-
+        //gvImages = (GridView) findViewById(R.id.gvItems);
+        gvImages = (StaggeredGridView) findViewById(R.id.gvItems);
         gvImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -181,11 +183,11 @@ public class SearchActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.filter_settings) {
-            //showEditDialog();
+            showEditDialog();
 
-            Intent i = new Intent(this, SettingsActivity.class);
+            /*Intent i = new Intent(this, SettingsActivity.class);
             i.putExtra("currentQuery", queryFilter);
-            startActivityForResult(i, REQUEST_RESULT);
+            startActivityForResult(i, REQUEST_RESULT);*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -308,12 +310,12 @@ public class SearchActivity extends ActionBarActivity {
     }
 
 
-    /*
+
     @Override
     public void onFinishEditDialog(QueryFilter queryFilterNew) {
 
         queryFilter = queryFilterNew;
         onImageSearchFromActionBar();
 
-    }*/
+    }
 }

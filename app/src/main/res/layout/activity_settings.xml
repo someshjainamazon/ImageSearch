@@ -86,11 +86,11 @@
         android:layout_height="wrap_content"
         android:text="Save"
         android:id="@+id/btnSave"
-        android:onClick="setNewFilters"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="72dp"
     />
+    <!--android:onClick="setNewFilters"-->
 
     <Spinner
         android:layout_width="fill_parent"
