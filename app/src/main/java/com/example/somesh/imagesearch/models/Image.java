@@ -46,7 +46,6 @@ public class Image implements Parcelable{
 
     private String title;
 
-
     public static Image parseImage(JSONObject imageJson){
 
         Image image = new Image();

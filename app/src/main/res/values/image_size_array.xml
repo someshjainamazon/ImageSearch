@@ -2,6 +2,7 @@
 <resources>
 
     <string-array name="image_size_array">
+        <item>---</item>
         <item>icon</item>
         <item>small</item>
         <item>medium</item>

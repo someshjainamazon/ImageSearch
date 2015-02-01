@@ -1,6 +1,9 @@
 package com.example.somesh.imagesearch.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -34,6 +37,9 @@ public class SearchActivity extends ActionBarActivity {
     private GridView gvImages;
     private ArrayList<Image> imageResults;
     private ImageAdapter imageAdapter;
+    public static final int REQUEST_RESULT=50;
+    private QueryFilter queryFilter;
+    String finalQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,7 @@ public class SearchActivity extends ActionBarActivity {
         imageResults = new ArrayList<Image>();
         imageAdapter = new ImageAdapter(this, imageResults);
         gvImages.setAdapter(imageAdapter);
+        queryFilter = new QueryFilter();
 
 
     }
@@ -69,6 +76,58 @@ public class SearchActivity extends ActionBarActivity {
         });
 
 
+        if(isInternetAvailable()) {
+            gvImages.setOnScrollListener(new EndlessScrollListener() {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    loadMoreData(page);
+
+
+                }
+            });
+        }
+
+    }
+
+    private void loadMoreData(int page) {
+
+        String infiniteQuery = finalQuery+"&start="+page;
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(infiniteQuery, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    JSONArray imagesJson = response.getJSONObject("responseData").getJSONArray("results");
+                    imageAdapter.addAll(Image.getImageArrayList(imagesJson));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.i("INFO", imageResults.toString());
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                boolean isAvailable = isInternetAvailable();
+
+                if(isAvailable==false){
+                    System.out.println("internet is not available");
+                }
+            }
+        });
+
+    }
+
+    private boolean isInternetAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo!=null && networkInfo.isConnectedOrConnecting();
     }
 
 
@@ -89,7 +148,8 @@ public class SearchActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.filter_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
+            i.putExtra("currentQuery", queryFilter);
+            startActivityForResult(i, REQUEST_RESULT);
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,8 +157,7 @@ public class SearchActivity extends ActionBarActivity {
 
     public void onImageSearch(View view) {
 
-        String query = etQuery.getText().toString();
-        String queryUrl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+query+"&rsz=8";
+        String queryUrl = constructQuery();
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(queryUrl, new JsonHttpResponseHandler(){
@@ -107,7 +166,8 @@ public class SearchActivity extends ActionBarActivity {
 
                 try {
                     JSONArray imagesJson = response.getJSONObject("responseData").getJSONArray("results");
-                    imageResults.clear();
+                    //imageResults.clear();
+                    imageAdapter.clear();
                     imageAdapter.addAll(Image.getImageArrayList(imagesJson));
 
                 } catch (JSONException e) {
@@ -121,5 +181,42 @@ public class SearchActivity extends ActionBarActivity {
 
     }
 
+    private String constructQuery() {
 
+        /*
+        String query = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
+
+        if(queryFilter.getImageSize()!=null) query=query+"&imgsz="+queryFilter.getImageSize().toString();
+        if(queryFilter.getColor()!=null) query=query+"&imgcolor="+queryFilter.getColor().toString();
+        if(queryFilter.getImageType()!=null) query=query+"&imgtype="+queryFilter.getImageType().toString();
+        if(queryFilter.getSiteFilter()!=null && queryFilter.getSiteFilter()!="") query=query+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
+
+        return query;
+        */
+
+
+        finalQuery = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
+
+        if(queryFilter.getImageSize()!=null) finalQuery=finalQuery+"&imgsz="+queryFilter.getImageSize().toString();
+        if(queryFilter.getColor()!=null) finalQuery=finalQuery+"&imgcolor="+queryFilter.getColor().toString();
+        if(queryFilter.getImageType()!=null) finalQuery=finalQuery+"&imgtype="+queryFilter.getImageType().toString();
+        if(queryFilter.getSiteFilter()!=null && !queryFilter.getSiteFilter().isEmpty()) finalQuery=finalQuery+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
+
+        return finalQuery;
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if(requestCode==REQUEST_RESULT){
+            if(resultCode==RESULT_OK){
+                queryFilter = data.getParcelableExtra("newSets");
+                onImageSearch(null);
+            }
+        }
+
+    }
 }
