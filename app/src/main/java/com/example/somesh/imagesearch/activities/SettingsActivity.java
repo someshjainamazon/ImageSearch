@@ -24,9 +24,10 @@ public class SettingsActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
 
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_settings);
         oldQuery = (QueryFilter)getIntent().getParcelableExtra("currentQuery");
         imageSizeSpinner = (Spinner) findViewById(R.id.spnImageSize);
         colorFilterSpinner = (Spinner) findViewById(R.id.spnColorFilter);

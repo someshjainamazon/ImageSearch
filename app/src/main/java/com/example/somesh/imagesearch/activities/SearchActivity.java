@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -62,6 +63,14 @@ public class SearchActivity extends ActionBarActivity {
 
 
     }
+
+    /*
+    private void showEditDialog() {
+
+        FragmentManager fm = getSupportFragmentManager();
+        EditDialog editNameDialog = EditDialog.newInstance(queryFilter);
+        editNameDialog.show(fm, "activity_settings");
+    }*/
 
     private void setupViews() {
 
@@ -172,6 +181,8 @@ public class SearchActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.filter_settings) {
+            //showEditDialog();
+
             Intent i = new Intent(this, SettingsActivity.class);
             i.putExtra("currentQuery", queryFilter);
             startActivityForResult(i, REQUEST_RESULT);
@@ -289,10 +300,20 @@ public class SearchActivity extends ActionBarActivity {
         if(requestCode==REQUEST_RESULT){
             if(resultCode==RESULT_OK){
                 queryFilter = data.getParcelableExtra("newSets");
-                //onImageSearch(null);   --- change this later 
+                //onImageSearch(null);   --- change this later
                 onImageSearchFromActionBar();
             }
         }
 
     }
+
+
+    /*
+    @Override
+    public void onFinishEditDialog(QueryFilter queryFilterNew) {
+
+        queryFilter = queryFilterNew;
+        onImageSearchFromActionBar();
+
+    }*/
 }
