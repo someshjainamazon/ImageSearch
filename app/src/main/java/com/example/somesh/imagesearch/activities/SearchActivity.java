@@ -4,17 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.somesh.imagesearch.R;
@@ -40,6 +43,7 @@ public class SearchActivity extends ActionBarActivity {
     public static final int REQUEST_RESULT=50;
     private QueryFilter queryFilter;
     String finalQuery;
+    String actionBarQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +139,28 @@ public class SearchActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                System.out.println("hello");
+                actionBarQuery=s;
+                constructQuery(actionBarQuery);
+                onImageSearchFromActionBar();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+
+
     }
 
     @Override
@@ -159,6 +184,32 @@ public class SearchActivity extends ActionBarActivity {
 
         String queryUrl = constructQuery();
 
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(queryUrl, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    JSONArray imagesJson = response.getJSONObject("responseData").getJSONArray("results");
+                    //imageResults.clear();
+                    imageAdapter.clear();
+                    imageAdapter.addAll(Image.getImageArrayList(imagesJson));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.i("INFO", imageResults.toString());
+            }
+        });
+
+
+    }
+
+
+    public void onImageSearchFromActionBar() {
+
+        String queryUrl = constructQuery(actionBarQuery);
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(queryUrl, new JsonHttpResponseHandler(){
             @Override
@@ -206,6 +257,30 @@ public class SearchActivity extends ActionBarActivity {
 
     }
 
+    private String constructQuery(String s) {
+
+        /*
+        String query = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
+
+        if(queryFilter.getImageSize()!=null) query=query+"&imgsz="+queryFilter.getImageSize().toString();
+        if(queryFilter.getColor()!=null) query=query+"&imgcolor="+queryFilter.getColor().toString();
+        if(queryFilter.getImageType()!=null) query=query+"&imgtype="+queryFilter.getImageType().toString();
+        if(queryFilter.getSiteFilter()!=null && queryFilter.getSiteFilter()!="") query=query+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
+
+        return query;
+        */
+
+
+        finalQuery = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+s+"&rsz=8";
+
+        if(queryFilter.getImageSize()!=null) finalQuery=finalQuery+"&imgsz="+queryFilter.getImageSize().toString();
+        if(queryFilter.getColor()!=null) finalQuery=finalQuery+"&imgcolor="+queryFilter.getColor().toString();
+        if(queryFilter.getImageType()!=null) finalQuery=finalQuery+"&imgtype="+queryFilter.getImageType().toString();
+        if(queryFilter.getSiteFilter()!=null && !queryFilter.getSiteFilter().isEmpty()) finalQuery=finalQuery+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
+
+        return finalQuery;
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -214,7 +289,8 @@ public class SearchActivity extends ActionBarActivity {
         if(requestCode==REQUEST_RESULT){
             if(resultCode==RESULT_OK){
                 queryFilter = data.getParcelableExtra("newSets");
-                onImageSearch(null);
+                //onImageSearch(null);   --- change this later 
+                onImageSearchFromActionBar();
             }
         }
 
