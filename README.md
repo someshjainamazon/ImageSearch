@@ -16,5 +16,8 @@ Following Functionalities have been added :
 11.staggered grid view instead of grid view. 
 
 
+![Alt text](https://github.com/someshjainiitkgp/ImageSearch/blob/master/imageSearch.gif "Image Search Android App")
+
+
 
 
