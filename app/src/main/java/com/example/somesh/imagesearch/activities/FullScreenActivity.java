@@ -54,7 +54,6 @@ public class FullScreenActivity extends ActionBarActivity {
 
         Image image = (Image) getIntent().getParcelableExtra("imageInfo");
         ImageView ivFull = (ImageView)findViewById(R.id.ivFullImage);
-        //Picasso.with(this).load(image.getFullUrl()).into(ivFull);  -- testing uncomment later
 
         Picasso.with(this).load(image.getFullUrl()).into(ivFull, new com.squareup.picasso.Callback() {
             @Override

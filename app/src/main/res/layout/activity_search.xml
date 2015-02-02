@@ -15,7 +15,7 @@
         android:layout_alignParentStart="true"
         android:numColumns="3" />-->
 
-    <EditText
+   <!-- <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/etQuery"
@@ -34,7 +34,7 @@
         android:onClick="onImageSearch"
         android:layout_alignBottom="@+id/etQuery"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true" /> -->
 
     <!--<GridView
         android:layout_width="wrap_content"
@@ -52,16 +52,19 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/gvItems"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/etQuery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:item_margin="8dp"
-        />
+        app:column_count_portrait="3"
+        app:column_count_landscape="5"
+        android:background="#A3BFFF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:outlineProvider="bounds" />
 
 
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivIcon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/image_search_icon"/>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivIcon"
+        android:layout_alignBottom="@+id/ivIcon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <!--<EditText
+            android:layout_width="278dp"
+            android:layout_height="match_parent"
+            android:id="@+id/etQuery"
+            android:hint="Enter Text"
+            android:paddingRight="70sp"
+            android:layout_gravity="left|top"
+            android:textColor="#A3BFFF"
+            android:textSize="30sp"
+            android:maxLines="1"
+            android:maxLength="100"
+            android:cursorVisible="true"
+            android:singleLine="true"
+            />-->
+
+        <EditText
+            android:layout_width="278dp"
+            android:layout_height="match_parent"
+            android:id="@+id/etQuery"
+            android:hint="Enter Text"
+            android:paddingRight="70sp"
+            android:layout_gravity="left|top"
+            android:maxLines="1"
+            android:maxLength="100"
+            android:textColor="#A3BFFF"
+            android:cursorVisible="true"
+            android:singleLine="true"
+            />
+
+
+        <Button
+            android:layout_width="42dp"
+            android:layout_height="37dp"
+            android:id="@+id/btnCross"
+            android:layout_gravity="right|center"
+            android:background="@drawable/cross_icon"
+            />
+    </FrameLayout>
+
+
+    <!--
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivIcon"
+        android:layout_toEndOf="@+id/ivIcon"
+        android:layout_alignBottom="@+id/ivIcon">
+
+        <EditText
+            android:id="@+id/calc_txt_Prise"
+            android:layout_width="332dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="20dp"
+            android:textSize="25dp"
+            android:textColor="@color/material_blue_grey_800"
+            android:textStyle="bold"
+            android:hint="Enter Query"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/calc_clear_txt_Prise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/abc_ic_clear_mtrl_alpha" />
+
+    </FrameLayout>-->
+
+</RelativeLayout>

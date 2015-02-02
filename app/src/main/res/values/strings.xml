@@ -10,7 +10,7 @@
     <string name="image_title_lable">Image Title</string>
     <string name="title_activity_full_screen">FullScreenActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="adv_search">Advanced Search Settings</string>
+    <string name="adv_search">Advanced Filters</string>
     <string name="tv_image_size">Size</string>
     <string name="select_color">Color Filter</string>
     <string name="select_image_type">Image Type</string>

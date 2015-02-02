@@ -2,6 +2,8 @@ package com.example.somesh.imagesearch.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
@@ -10,15 +12,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
@@ -38,7 +44,7 @@ import java.util.ArrayList;
 
 public class SearchActivity extends ActionBarActivity implements EditDialog.EditDialogListener{
 
-    private EditText etQuery;
+    //private EditText etQuery;
     //private GridView gvImages;
     private StaggeredGridView gvImages;
     private ArrayList<Image> imageResults;
@@ -53,16 +59,34 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.search_icon);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setTitle("     ImageSearch");
+        /*getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setLogo(R.drawable.search_icon);
+        //getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("  ImageSearch");*/
+
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.custom_actionbar);
+
+        Button btnCancel = (Button) findViewById(R.id.btnCross);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText etQuery = (EditText) findViewById(R.id.etQuery);
+                etQuery.setText("");
+            }
+        });
+
+
+
         setupViews();
         imageResults = new ArrayList<Image>();
         imageAdapter = new ImageAdapter(this, imageResults);
         gvImages.setAdapter(imageAdapter);
         queryFilter = new QueryFilter();
-
 
     }
 
@@ -76,8 +100,6 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
 
     private void setupViews() {
 
-        etQuery = (EditText) findViewById(R.id.etQuery);
-        //gvImages = (GridView) findViewById(R.id.gvItems);
         gvImages = (StaggeredGridView) findViewById(R.id.gvItems);
         gvImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -146,11 +168,15 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
     }
 
 
+    /*onCreateOptionsMenu deals with the action bar */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+
+
+        /*MenuItem searchItem = menu.findItem(R.id.action_search);
         android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(searchItem);
 
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
@@ -167,9 +193,45 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
             public boolean onQueryTextChange(String s) {
                 return false;
             }
+        });*/
+
+        final EditText etQuery = (EditText) findViewById(R.id.etQuery);
+        etQuery.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    actionBarQuery=etQuery.getText().toString();
+                    constructQuery(actionBarQuery);
+                    onImageSearchFromActionBar();
+                    return true;
+                }
+                return false;
+            }
         });
 
-        return super.onCreateOptionsMenu(menu);
+
+        /*final EditText editText = (EditText)findViewById(R.id.etQuery);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    Toast.makeText(SearchActivity.this, editText.getText(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });*/
+
+        return true;
+
+
+
+        //return super.onCreateOptionsMenu(menu);
 
 
     }
@@ -191,32 +253,6 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onImageSearch(View view) {
-
-        String queryUrl = constructQuery();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(queryUrl, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                try {
-                    JSONArray imagesJson = response.getJSONObject("responseData").getJSONArray("results");
-                    //imageResults.clear();
-                    imageAdapter.clear();
-                    imageAdapter.addAll(Image.getImageArrayList(imagesJson));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Log.i("INFO", imageResults.toString());
-            }
-        });
-
-
     }
 
 
@@ -245,44 +281,9 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
 
     }
 
-    private String constructQuery() {
 
-        /*
-        String query = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
-
-        if(queryFilter.getImageSize()!=null) query=query+"&imgsz="+queryFilter.getImageSize().toString();
-        if(queryFilter.getColor()!=null) query=query+"&imgcolor="+queryFilter.getColor().toString();
-        if(queryFilter.getImageType()!=null) query=query+"&imgtype="+queryFilter.getImageType().toString();
-        if(queryFilter.getSiteFilter()!=null && queryFilter.getSiteFilter()!="") query=query+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
-
-        return query;
-        */
-
-
-        finalQuery = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
-
-        if(queryFilter.getImageSize()!=null) finalQuery=finalQuery+"&imgsz="+queryFilter.getImageSize().toString();
-        if(queryFilter.getColor()!=null) finalQuery=finalQuery+"&imgcolor="+queryFilter.getColor().toString();
-        if(queryFilter.getImageType()!=null) finalQuery=finalQuery+"&imgtype="+queryFilter.getImageType().toString();
-        if(queryFilter.getSiteFilter()!=null && !queryFilter.getSiteFilter().isEmpty()) finalQuery=finalQuery+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
-
-        return finalQuery;
-
-    }
 
     private String constructQuery(String s) {
-
-        /*
-        String query = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+etQuery.getText().toString()+"&rsz=8";
-
-        if(queryFilter.getImageSize()!=null) query=query+"&imgsz="+queryFilter.getImageSize().toString();
-        if(queryFilter.getColor()!=null) query=query+"&imgcolor="+queryFilter.getColor().toString();
-        if(queryFilter.getImageType()!=null) query=query+"&imgtype="+queryFilter.getImageType().toString();
-        if(queryFilter.getSiteFilter()!=null && queryFilter.getSiteFilter()!="") query=query+"&as_sitesearch="+queryFilter.getSiteFilter().toString();
-
-        return query;
-        */
-
 
         finalQuery = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+s+"&rsz=8";
 
@@ -315,7 +316,7 @@ public class SearchActivity extends ActionBarActivity implements EditDialog.Edit
     public void onFinishEditDialog(QueryFilter queryFilterNew) {
 
         queryFilter = queryFilterNew;
-        onImageSearchFromActionBar();
+        if(actionBarQuery!=null && !actionBarQuery.isEmpty())   onImageSearchFromActionBar();
 
     }
 }
