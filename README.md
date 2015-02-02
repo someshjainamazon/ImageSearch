@@ -12,5 +12,9 @@ Following Functionalities have been added :
 7. added custom action bar to search from within the action bar. 
 8. share an image through messagin app.
 9. dialog fragment added for modal overlay advanced settings 
-10. custom text font (Chantelli_Antiqua.ttf) added.
-11. 
+10.custom text font (Chantelli_Antiqua.ttf) added.
+11.staggered grid view instead of grid view. 
+
+
+
+
